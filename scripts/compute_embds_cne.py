@@ -1,7 +1,7 @@
 import numpy as np
 import os
 from vis_utils.loaders import load_dataset
-from utils import get_noise_in_estimator
+from utils import get_noise_in_estimator, get_path
 import pickle
 import cne
 
@@ -16,8 +16,8 @@ log_embds = True
 log_norms = True
 log_kl = True
 optimizer = "sgd" #"sgd" or "adam"
-n_epochs = 750
-loss_mode = "nce" #["umap", "nce", "neg_sample", "infonce", "infonce_alt"]
+n_epochs = 500
+loss_mode = "neg_sample" #["umap", "nce", "neg_sample", "infonce", "infonce_alt"]
 n_noise = 5
 batch_size = 1024
 rescale = 1.0 # how to rescale the initialization
@@ -27,10 +27,10 @@ lr_min_factor=0.0
 clamp_low = 1e-10
 on_gpu = True
 noise_in_estimator = 1. # reparametrization of Z_bar, default of 1. corresponds to normal negative sampling
-init_type = "pca"  # "pca", "random" or "EE" for early exaggeration
+init_type = "EE"  # "pca", "random" or "EE" for early exaggeration
 
 
-root_path = "/export/ial-nfs/user/sdamrich/nce_data"
+root_path = get_path("data")
 
 # get data
 k = 15
@@ -73,22 +73,24 @@ elif init_type == "EE":
                                       graph=sknn_graph,
                                       n=len(x) if parametric else None)
         embedder_init = cne.CNE(loss_mode=loss_mode,
-                           parametric=parametric,
-                           negative_samples=5,
-                           n_epochs=250,
-                           batch_size=batch_size,
-                           on_gpu=on_gpu,
-                           print_freq_epoch=100,
-                           print_freq_in_epoch=None,
-                           callback=logger,
-                           optimizer=optimizer,
-                           momentum=momentum,
-                           save_freq=1,
-                           anneal_lr=anneal_lr,
-                           lr_min_factor=lr_min_factor,
-                           clamp_low=clamp_low,
-                           seed=seed
-                           )
+                                parametric=parametric,
+                                negative_samples=5,
+                                n_epochs=250,
+                                batch_size=batch_size,
+                                on_gpu=on_gpu,
+                                print_freq_epoch=100,
+                                print_freq_in_epoch=None,
+                                callback=logger,
+                                optimizer=optimizer,
+                                momentum=momentum,
+                                save_freq=1,
+                                anneal_lr=anneal_lr,
+                                lr_min_factor=lr_min_factor,
+                                clamp_low=clamp_low,
+                                seed=seed,
+                                loss_aggregation="sum",
+                                force_resample=True
+                                )
         embedder_init.fit(x, init=init, graph=sknn_graph)
         embedder_init_cne = embedder_init.cne
 
@@ -141,6 +143,8 @@ for noise_in_estimator in nbs_noise_in_estimator:
                            lr_min_factor=lr_min_factor,
                            clamp_low=clamp_low,
                            seed=seed,
+                           loss_aggregation="sum",
+                           force_resample=True
                            )
         embedder.fit(x, init=init, graph=sknn_graph)
         embedder_cne = embedder.cne

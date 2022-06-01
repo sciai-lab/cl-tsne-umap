@@ -1,6 +1,7 @@
 import numpy as np
 import os
 from vis_utils.loaders import load_dataset
+from utils import get_path
 import pickle
 import umap
 
@@ -16,10 +17,8 @@ anneal_lr = True
 rescale = 1.0
 n_noise = 5
 
-root_path = "/export/ial-nfs/user/sdamrich/nce_data"
-fig_path = "/export/ial-nfs/user/sdamrich/nce_data/figures"
-
-
+root_path = get_path("data")
+fig_path = get_path("figures")
 
 # get data
 x, y, sknn_graph, pca2 = load_dataset(root_path, dataset, k)

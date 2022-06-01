@@ -1,8 +1,6 @@
 import numpy as np
 
 def get_noise_in_estimator(n, n_noise, dataset):
-    print(dataset)
-
     # rescale the partition funciton / Z by n_noise and the data distribution
     if dataset == "mnist":
         # with EE
@@ -41,3 +39,24 @@ def get_noise_in_estimator(n, n_noise, dataset):
                                         ])
 
     return nbs_noise_in_estimator
+
+
+def get_path(path_type):
+    with open("../paths", "r") as file:
+        lines = file.readlines()
+
+    lines = [line.split(" ") for line in lines]
+    path_dict = {line[0]: line[1].strip("\n") for line in lines}
+
+    if path_type == "data":
+        try:
+            return path_dict["data_path"]
+        except KeyError:
+            print("There is no path 'data_path'.")
+
+    elif path_type == "figures":
+        try:
+            return path_dict["fig_path"]
+        except KeyError:
+            print("There is no path 'fig_path'.")
+
