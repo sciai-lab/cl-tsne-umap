@@ -31,7 +31,7 @@ cd ncvis
 make libs
 make wrapper
 
-git clone https://github.com/berenslab/contrastive-ne
+git clone -b arxiv-v1 https://github.com/berenslab/contrastive-ne
 pip install --no-deps . 
 cd ..
 ```
