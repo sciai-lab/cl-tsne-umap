@@ -1,21 +1,86 @@
-# Three methods for visualisation
+This repository contains scripts and notebooks to reproduce the experiments in 
+**Contrastive learning unifies t-SNE and UMAP**. 
 
-Compares and relates the three visualisation methods UMAP, NCVis and t-SNE. 
+It depends on several other repositories, in particular [contrastive-ne](https://github.com/berenslab/contrastive-ne), which implement the actual logic and contain utilities.
 
-## Installation
-Clone repository
+# Installation
+Create and activate the conda environment
 ```
-git clone https://github.com/sdamrich/three-methods-for-vis
+conda env create -f environment.yml
+conda activate cl_tsne_umap
+```
+Install `openTSNE`, `vis_utis`, `umap`, `ncvis` and `cne`
+```
+git clone https://github.com/sdamrich/openTSNE
+cd openTSNE
+python setup.py install
+cd ..
+
+git clone https://github.com/sdamrich/vis_utils
+cd vis_utils
+python setup.py install
+cd ..
+
+git clone https://github.com/sdamrich/UMAPs-true-loss
+cd UMAPs-true-loss
+python setup.py install
+cd ..
+
+git clone https://github.com/sdamrich/ncvis
+cd ncvis
+make libs
+make wrapper
+
+git clone https://github.com/berenslab/contrastive-ne
+pip install --no-deps . 
+cd ..
+```
+# Usage
+To reproduce the Neg-t-SNE embeddings from Fig. 1 a)-e), run
+```
+python scripts/compute_embds_cne.py
+```
+and check out the results in `notebooks/negtsne.ipynb`.
+
+<img width="400" alt="Neg-t-SNE on MNIST" src="/figures/Fig_1_a-e.png">
+
+
+To reproduce the UMAP embeddings from Fig. S1 a)-c), run
+```
+python scripts/compute_embds_umap.py
+```
+and check out the results in `notebooks/umap_vs_negtsne.ipynb`.
+
+<img width="400" alt="UMAP no annealing" src="/figures/Fig_S1_a-c.png">
+
+
+To reproduce the SimCLR experiment with negative sampling loss, run
+```
+python scripts/cifar10-acc.py
 ```
 
-Create conda environment
-```
-cd three-methods-for-vis
-conda env create -f environment
-conda activate 3m4v
-```
+For other experiments adapt the parameters at the top of `compute_embds_cne.py`
+and `compute_embds_umap.py` or at the top of the `main` function in `cifar10-acc.py`
+accordingly. Downloaded datasets and neighbor embedding results will be saved in `data` and figures 
+will be saved in `figures`.
 
-Add [openTSNE](https://github.com/sdamrich/openTSNE), [vis_utils](https://github.com/sdamrich/vis_utils), [UMAPs-true-loss](https://github.com/sdamrich/UMAPs-true-loss) and [ncvis](https://github.com/sdamrich/ncvis). Install ncvis from source using the pip instructions in the conda environment.
+All neighbor embedding results alongside their parameters can be 
+inspected in the jupyter notebooks in `notebooks`.
+This list details which figures can be reproduced using which notebooks:
 
-## Getting Started
-Check out the notebooks and have fun.
+- Fig 1:  `negtsne.ipynb`, `tsne.ipynb`, `ncvis.ipynb`
+- Fig 2:  `umap_vs_negtsne.ipynb`
+- Fig 3:  `parametric.ipynb`
+- Fig S1: `umap_vs_negtsne.ipynb`
+- Fig S2: `umap_vs_negtsne.ipynb`
+- Fig S3: `attr_rep_plot_UMAP_neg.ipynb`
+- Fig S4: `umap_vs_negtsne_vary_n_noise.ipynb`
+- Fig S5: `tsne_vs_ncvis.ipynb`
+- Fig S6: `tsne_vs_ncvis.ipynb`
+- Fig S7: `human_negtsne.ipynb`, `human_tsne_ncvis_umap.ipynb`
+- Fig S8: `negtsne.ipynb`, `tsne_ipynb`, `ncvis.ipynb`
+- Fig S9: `infonctsne.ipynb`
+- Fig S10: `ncvis.ipynb`
+- Fig S11: `tsne.ipynb`
+
+

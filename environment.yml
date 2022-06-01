@@ -1,23 +1,30 @@
-name: 3m4v
+name: cl_tsne_umap
 channels:
   - pytorch
+  - conda-forge
   - defaults
 dependencies:
-  - scipy=1.6.0
-  - pytorch=1.7.1
-  - ipykernel
-  - pandas
   - cudatoolkit=10.2.89
-  - numpy=1.19.2
-  - numba[version='>=0.49']
-  - scikit-learn=0.23.2
+  - cython=0.29.24
+  - ffmpeg=4.3.2
+  - intel-openmp=2021.4.0
+  - ipykernel=6.4.1
   - matplotlib=3.3.2
+  - mscorefonts=0.0.1
+  - numba=0.54.1
+  - numpy=1.19.2
+  - pandas=1.3.4
+  - pip=22.0.4
   - python=3.8.5
-  - pytorch=1.7.1
-  - cython
-  - seaborn
-  - pynndescent
-  - intel-openmp
-  - torchvision
+  - python-annoy=1.17.0
+  - pytorch=1.10.2=py3.8_cuda10.2_cudnn7.6.5_0
+  - scikit-learn=0.23.2
+  - scipy=1.6.0
+  - seaborn=0.11.2
+  - setuptools=58.0.4
+  - tensorboard=2.8.0
+  - torchvision=0.11.3
   - pip:
-      - pykeops==1.5
+    - pykeops==1.5
+    - pynndescent==0.5.6
+    - torch-tb-profiler==0.4.0
