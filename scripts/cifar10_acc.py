@@ -172,8 +172,8 @@ class FCNetwork(nn.Module):
         self.flatten = nn.Flatten()
         self.linear_relu_stack = nn.Sequential(
             nn.Linear(in_dim, hidden_dim),
-            nn.ReLU(),
-            nn.Linear(hidden_dim, hidden_dim),
+            #nn.ReLU(),
+            #nn.Linear(hidden_dim, hidden_dim),
             nn.ReLU(),
             nn.Linear(hidden_dim, feat_dim),
         )
@@ -289,7 +289,10 @@ class Bottleneck(nn.Module):
     def forward(self, x):
         out = F.relu(self.bn1(self.conv1(x)))
         out = F.relu(self.bn2(self.conv2(out)))
-        out = self.bn3(self.conv3(out))
+        out  = self.conv3(out)
+        print(out.shape)
+        out = self.bn3(out)
+        #out = self.bn3(self.conv3(out))
         out += self.shortcut(x)
         preact = out
         out = F.relu(out)
@@ -360,10 +363,10 @@ def resnet50(**kwargs):
     return ResNet(Bottleneck, [3, 4, 6, 3], **kwargs)
 
 def main():
-    epochs = 1000
+    epochs = 1 # 1000
     epochs_warmup = 10
     epochs_linear_eval = 100
-    batch_size = 1024
+    batch_size = 512
     negative_samples = 16  # or 2 * batch_size
     learning_rate = 0.03 * batch_size / 256
     loss_mode = "neg_sample"  # or infonce, nce, ...
@@ -375,14 +378,15 @@ def main():
     lr_anneal = "cosine"
     num_workers = 8
     device = "cuda:0"
-    model_name = "resnet18"
+    model_name = "resnet50"
     root_dir = get_path("data")
+    run = 0 # just used for numbering
 
     rng = np.random.default_rng(4123)
 
     ## def get_dataset():
     cifar = fetch_openml("CIFAR_10",
-                         data_home=os.path.join(root_dir, "CIFAR_10")
+                         data_home=os.path.join(root_dir, "cifar10")
                          )
     # Separate the color channels and move them to the back.
     data = np.moveaxis(cifar.data.reshape(60000, 3, 32, 32), 1, -1)
@@ -425,6 +429,7 @@ def main():
         weight_decay=weight_decay,
         warmup_epochs=epochs_warmup,
         warmup_lr=0,
+        clamp_low=0.0,
         temperature=temperature,
         print_freq_epoch=100,
     )
@@ -432,6 +437,10 @@ def main():
     # contrastive training
     print("1: training CLR model")
     cne.fit(loader)
+    file_name = os.path.join(root_dir, "cifar10", "results", f"{model_name}_m_{negative_samples}_run_{run}")
+    import pickle
+    with open(file_name, "wb") as file:
+        pickle.dump(cne, file, pickle.HIGHEST_PROTOCOL)
 
     ## linear evaluation
     X_train, X_test, y_train, y_test = train_test_split(
