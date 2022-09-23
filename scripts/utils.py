@@ -4,17 +4,39 @@ def get_noise_in_estimator(n, n_noise, dataset):
     # rescale the partition funciton / Z by n_noise and the data distribution
     if dataset == "mnist":
         # with EE
-        noise_in_estimator_tsne = 8.13 * 10**6 * n_noise / n / (n-1)
+        noise_in_estimator_tsne = 8.13 * 10**6
 
         # without EE
-        #noise_in_estimator_tsne = 6.25 * 10**6 * n_noise / n / (n-1)
+        #noise_in_estimator_tsne = 6.25 * 10**6
 
         # using Z not norm for NCVis
-        noise_in_estimator_ncvis = 3.43 * 10**7 * n_noise / n / (n-1)
+        noise_in_estimator_ncvis = 3.43 * 10**7
 
     elif dataset == "human-409b2":
-        noise_in_estimator_tsne = 1.30 * 10**6 * n_noise / n / (n-1)
-        noise_in_estimator_ncvis = 3.57 * 10**6 * n_noise / n / (n-1) # using Z not norm
+        noise_in_estimator_tsne = 1.30 * 10**6
+        noise_in_estimator_ncvis = 3.57 * 10**6 # using Z not norm
+
+    elif dataset == "imba_mnist_odd_seed_0":
+        noise_in_estimator_tsne = 3.16 * 10**6
+        noise_in_estimator_ncvis = 7.88 * 10**6
+
+    elif dataset == "imba_mnist_lin_seed_0":
+        noise_in_estimator_tsne = 3.12 * 10**6
+        noise_in_estimator_ncvis = 6.15 * 10**6
+    elif dataset == "zebrafish":
+        noise_in_estimator_tsne = 7.98 * 10**6
+        noise_in_estimator_ncvis = 3.08 * 10**7
+    elif dataset == "c_elegans":
+        noise_in_estimator_tsne = 1.17 * 10**7
+        noise_in_estimator_ncvis = 3.69 * 10**7
+    elif dataset == "k49":
+        noise_in_estimator_tsne = 7.98 * 10**6
+        noise_in_estimator_ncvis = 3.95 * 10**8
+    else:
+        raise NotImplementedError
+    noise_in_estimator_tsne = noise_in_estimator_tsne * n_noise / n / (n-1)
+    noise_in_estimator_ncvis = noise_in_estimator_ncvis * n_noise / n / (n-1)
+
 
     noise_in_estimator_tsne = float(np.format_float_scientific(noise_in_estimator_tsne,
                                                            precision=2))
