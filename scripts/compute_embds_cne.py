@@ -155,6 +155,6 @@ for noise_in_estimator in nbs_noise_in_estimator:
     print(f"done with noise_in_estimator={noise_in_estimator}")
     print(f"Time in min: {embedder_cne.time / 60}")
 
-print("done with mnist negtsne spectrum")
+print(f"done with {dataset} negtsne spectrum seed {seed}")
 
 
