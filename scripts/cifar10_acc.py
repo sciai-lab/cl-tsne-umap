@@ -1,16 +1,19 @@
 #!/bin/env python3
 
+from cne import ContrastiveEmbedding
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torchvision
 from torch.utils.data import Dataset, DataLoader
 from sklearn.datasets import fetch_openml
 from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
 from torchvision import transforms
 import os
-from cne import ContrastiveEmbedding
-from utils import get_path
+from utils import get_path # need to add .utils for loading
+
 
 
 def get_transforms(mean, std, size, setting="train"):
@@ -20,6 +23,7 @@ def get_transforms(mean, std, size, setting="train"):
         transform = transforms.Compose(
             [
                 transforms.functional.to_pil_image,
+                # transforms.RandomRotation(30),
                 transforms.RandomResizedCrop(size=size, scale=(0.2, 1.0)),
                 transforms.RandomHorizontalFlip(),
                 transforms.RandomApply(
@@ -167,13 +171,11 @@ class LR_Scheduler(object):
 class FCNetwork(nn.Module):
     "Fully-connected network"
 
-    def __init__(self, in_dim=784, feat_dim=128, hidden_dim=100):
+    def __init__(self, in_dim=784, feat_dim=128, hidden_dim=1024):
         super(FCNetwork, self).__init__()
         self.flatten = nn.Flatten()
         self.linear_relu_stack = nn.Sequential(
             nn.Linear(in_dim, hidden_dim),
-            #nn.ReLU(),
-            #nn.Linear(hidden_dim, hidden_dim),
             nn.ReLU(),
             nn.Linear(hidden_dim, feat_dim),
         )
@@ -190,7 +192,7 @@ class ResNetFC(nn.Module):
         model_name="resnet18",
         in_channel=3,
         feat_dim=2,
-        hidden_dim=100,
+        hidden_dim=1024,
         normalize=False,
     ):
         super(ResNetFC, self).__init__()
@@ -198,12 +200,10 @@ class ResNetFC(nn.Module):
             self.resnet = resnet18()
             in_dim = 512
         elif model_name == "resnet50":
-            self.resnet = resnet50()
+            self.resnet = torchvision.models.resnet50()
             in_dim = 2048
-        self.backbone_dim = in_dim
         self.feat_dim = feat_dim
-        self.resnet.output_dim = in_dim # self.resnet.fc.in_features
-        #self.resnet.fc = torch.nn.Identity()
+        self.backbone_dim = in_dim
 
         self.fc = FCNetwork(in_dim=in_dim, feat_dim=feat_dim, hidden_dim=hidden_dim)
         self.normalize = normalize
@@ -289,10 +289,7 @@ class Bottleneck(nn.Module):
     def forward(self, x):
         out = F.relu(self.bn1(self.conv1(x)))
         out = F.relu(self.bn2(self.conv2(out)))
-        out  = self.conv3(out)
-        print(out.shape)
-        out = self.bn3(out)
-        #out = self.bn3(self.conv3(out))
+        out = self.bn3(self.conv3(out))
         out += self.shortcut(x)
         preact = out
         out = F.relu(out)
@@ -359,30 +356,27 @@ def resnet18(**kwargs):
     return ResNet(BasicBlock, [2, 2, 2, 2], **kwargs)
 
 
-def resnet50(**kwargs):
-    return ResNet(Bottleneck, [3, 4, 6, 3], **kwargs)
-
 def main():
-    epochs = 1 # 1000
-    epochs_warmup = 10
+    epochs = 1000
+    epochs_warmup = 5
     epochs_linear_eval = 100
-    batch_size = 512
+    batch_size = 1024
     negative_samples = 16  # or 2 * batch_size
     learning_rate = 0.03 * batch_size / 256
-    loss_mode = "neg_sample"  # or infonce, nce, ...
+    loss_mode = "infonce"  # or infonce, nce, neg_sample, ...
     n_dim = 128
+    hidden_dim = 1024
     metric = "cosine"
     temperature = 0.5
     optimizer = "sgd"
     weight_decay = 5e-4
     lr_anneal = "cosine"
-    num_workers = 8
+    num_workers = 16
     device = "cuda:0"
-    model_name = "resnet50"
+    rng = np.random.default_rng(121123)
+    model_name = "resnet18"
     root_dir = get_path("data")
-    run = 0 # just used for numbering
-
-    rng = np.random.default_rng(4123)
+    run = "0" # just used for numbering
 
     ## def get_dataset():
     cifar = fetch_openml("CIFAR_10",
@@ -413,6 +407,7 @@ def main():
         model_name=model_name,
         in_channel=3,
         feat_dim=n_dim,
+        hidden_dim=hidden_dim
     )
 
     cne = ContrastiveEmbedding(
@@ -429,22 +424,30 @@ def main():
         weight_decay=weight_decay,
         warmup_epochs=epochs_warmup,
         warmup_lr=0,
-        clamp_low=0.0,
         temperature=temperature,
         print_freq_epoch=100,
     )
 
     # contrastive training
     print("1: training CLR model")
-    cne.fit(loader)
-    file_name = os.path.join(root_dir, "cifar10", "results", f"{model_name}_m_{negative_samples}_run_{run}")
+    file_name = os.path.join(root_dir, "cifar10", "results",
+                             f"{model_name}_batch_size_{batch_size}_epochs_{epochs}_m_{negative_samples}_run_{run}.pkl")
     import pickle
-    with open(file_name, "wb") as file:
-        pickle.dump(cne, file, pickle.HIGHEST_PROTOCOL)
+    try:
+        with open(file_name, "rb") as file:
+            cne = pickle.load(file)
+    except:
+        cne.fit(loader)
+        with open(file_name, "wb") as file:
+            pickle.dump(cne, file, pickle.HIGHEST_PROTOCOL)
 
     ## linear evaluation
     X_train, X_test, y_train, y_test = train_test_split(
-        data, labels, random_state=rng.integers(2**32 - 1), test_size=10000
+        data,
+        labels,
+        random_state=rng.integers(2**32 - 1),
+        test_size=10000,
+        stratify=labels,
     )
 
     train_dataset = TransformLabelData(
@@ -465,7 +468,7 @@ def main():
     gen = torch.Generator().manual_seed(seed)
     test_loader = torch.utils.data.DataLoader(
         test_dataset,
-        shuffle=True,
+        shuffle=False,
         batch_size=batch_size,
         num_workers=num_workers,
         generator=gen,
@@ -504,17 +507,9 @@ def main():
 
     model_transform = model.resnet
 
-    # warm up batchnorm
-    if True:
-        model.train()
-        with torch.no_grad():
-            for _ in range(5):
-                for (images, labels) in full_loader:
-                    model_transform(images.to(device))
-
-    model.eval()
+    model_transform.eval()
     classifier.train()
-    print("2: training linear classifier")
+    print("2: training linear classifier", end="")
     for epoch in range(epochs_linear_eval):
         for (images, labels) in train_loader:
             labels = labels.type(dtype=torch.long).to(device)
@@ -539,8 +534,46 @@ def main():
             new_n = preds.shape[0]
             c += correct
             n += new_n
+    print(f", done with acc {c / n}")
 
-    print(f"3: done, accuracy is {c / n}")
+    knn = KNeighborsClassifier(n_neighbors=15, metric="cosine", n_jobs=-1)
+    knn_train_dataset = TransformLabelData(
+        X_train, y_train, mean, std, dim, setting="test"
+    )
+    seed = int(rng.integers(2**63))
+    gen = torch.Generator().manual_seed(seed)
+    knn_train_loader = torch.utils.data.DataLoader(
+        knn_train_dataset,
+        shuffle=False,
+        batch_size=batch_size,
+        num_workers=num_workers,
+        generator=gen,
+        drop_last=False,
+    )
+    print("3: training knn classifier", end="")
+    with torch.no_grad():
+        features = np.vstack(
+            [
+                model_transform(b.to(device)).cpu().detach().numpy()
+                for b, _ in knn_train_loader
+            ]
+        )
+
+    knn.fit(features, y_train)
+    with torch.no_grad():
+        features = np.vstack(
+            [
+                model_transform(b.to(device)).cpu().detach().numpy()
+                for b, _ in test_loader
+            ]
+        )
+    acc = knn.score(features, y_test)
+    print(f", done with acc {acc}")
+
+    print(f"4.1: done, linear accuracy is {c / n}")
+    print(f"4.2: done, knn    accuracy is {acc}")
+
+    print(f"Done with {file_name}")
 
 
 if __name__ == "__main__":
