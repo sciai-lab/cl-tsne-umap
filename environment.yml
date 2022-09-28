@@ -7,6 +7,9 @@ dependencies:
   - cudatoolkit=10.2.89
   - cython=0.29.24
   - ffmpeg=4.3.2
+  - firelight
+  - h5py<3.2
+  - anndata
   - intel-openmp=2021.4.0
   - ipykernel=6.4.1
   - matplotlib=3.3.2
