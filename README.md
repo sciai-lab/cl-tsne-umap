@@ -54,19 +54,19 @@ and check out the results in `notebooks/umap_vs_negtsne.ipynb`.
 <img width="400" alt="UMAP no annealing" src="/figures/Fig_S1_a-c.png">
 
 
-To reproduce the SimCLR experiment with negative sampling loss, run
+To reproduce the SimCLR experiments with `m=16`, run
 ```
-python scripts/cifar10-acc.py
+python cne_scripts_notebooks/scripts/cifar10-acc.py
 ```
 
 For other experiments adapt the parameters at the top of `compute_embds_cne.py`
 and `compute_embds_umap.py` or at the top of the `main` function in `cifar10-acc.py`
-accordingly. Downloaded datasets and neighbor embedding results will be saved in `data` and figures 
-will be saved in `figures`.
+accordingly. Downloaded datasets and neighbor embedding results will be saved in `cne_scripts_notebooks/data` and figures 
+will be saved in `cne_scripts_notebooks/figures`.
 
 All neighbor embedding results alongside their parameters can be 
-inspected in the jupyter notebooks in `notebooks`.
-This list details which figures can be reproduced using which notebooks:
+inspected in the jupyter notebooks in `cne_scripts_notebooks/notebooks`.
+This list details which figures can be inspected using which notebooks:
 
 - Fig 1:  `negtsne.ipynb`, `tsne.ipynb`, `ncvis.ipynb`
 - Fig 2:  `umap_vs_negtsne.ipynb`
@@ -77,10 +77,12 @@ This list details which figures can be reproduced using which notebooks:
 - Fig S4: `umap_vs_negtsne_vary_n_noise.ipynb`
 - Fig S5: `tsne_vs_ncvis.ipynb`
 - Fig S6: `tsne_vs_ncvis.ipynb`
-- Fig S7: `human_negtsne.ipynb`, `human_tsne_ncvis_umap.ipynb`
-- Fig S8: `negtsne.ipynb`, `tsne_ipynb`, `ncvis.ipynb`
-- Fig S9: `infonctsne.ipynb`
-- Fig S10: `ncvis.ipynb`
-- Fig S11: `tsne.ipynb`
-
-
+- Fig S7: `negtsne.ipynb`, `tsne_ipynb`, `ncvis.ipynb`
+- Fig S8: `imba_mnist_negtsne.ipynb`, `imba_mnist_tsne_ncvis_umap.ipynb`
+- Fig S9: `human_negtsne.ipynb`, `human_tsne_ncvis_umap.ipynb`
+- Fig S10: `zebrafish_negtsne.ipynb`, `zebrafish_tsne_ncvis_umap.ipynb`
+- Fig S11: `c_elegans_negtsne.ipynb`, `c_elegans_tsne_ncvis_umap.ipynb`
+- Fig S12: `k49_negtsne.ipynb`, `k49_tsne_ncvis_umap.ipynb`
+- Fig S13: `k49_negtsne.ipynb`
+- Fig S14: `ncvis.ipynb`, `tsne.ipynb`
+- Fig S15: `infonctsne.ipynb`, `tsne.ipynb`
