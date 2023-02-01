@@ -11,7 +11,7 @@ dataset = "mnist"
 a = 1.0
 b = 1.0
 on_gpu = True
-log_embds = True
+log_embds = False
 log_norms = False
 log_kl = False
 optimizer = "sgd"  # "sgd" or "adam"
@@ -44,7 +44,7 @@ init = pca2
 if rescale:
     init = pca2 / np.std(pca2[:, 0]) * rescale
 
-if  init_type == "pca":
+if init_type == "pca":
     init_str = f"pca_rescale_{rescale}"
 
 
