@@ -10,23 +10,23 @@ dataset = "mnist"
 # parameters
 a = 1.0
 b = 1.0
-seed = 2
+seed = 0
 parametric = False
 log_embds = True
 log_norms = True
 log_kl = True
-optimizer = "sgd" #"sgd" or "adam"
+optimizer = "sgd"  # "sgd" or "adam"
 n_epochs = 500
-loss_mode = "neg_sample" #["umap", "nce", "neg_sample", "infonce", "infonce_alt"]
+loss_mode = "neg_sample"  # ["umap", "nce", "neg_sample", "infonce", "infonce_alt"]
 n_noise = 5
 batch_size = 1024
-rescale = 1.0 # how to rescale the initialization
+rescale = 1.0  # how to rescale the initialization
 anneal_lr = True
-momentum=0.0
-lr_min_factor=0.0
+momentum = 0.0
+lr_min_factor = 0.0
 clamp_low = 1e-10
-on_gpu = True
-noise_in_estimator = 1. # reparametrization of Z_bar, default of 1. corresponds to normal negative sampling
+on_gpu = True  # puts the dataset on the GPU as well
+noise_in_estimator = 1.  # reparametrization of Z_bar, default of 1. corresponds to normal negative sampling
 init_type = "EE"  # "pca", "random" or "EE" for early exaggeration
 
 
