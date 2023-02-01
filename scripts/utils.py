@@ -55,7 +55,7 @@ def get_noise_in_estimator(n, n_noise, dataset):
                                         1e-1,
                                         2e-1,
                                         5e-1,
-                                        1e-0,2e-0, 5e-0,
+                                        1e-0, 2e-0, 5e-0,
                                         1e1, 2e1, 5e1,
                                         1e2, 2e2, 5e2
                                         ])
