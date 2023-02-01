@@ -1,5 +1,5 @@
 This repository contains scripts and notebooks to reproduce the experiments in 
-**Contrastive learning unifies t-SNE and UMAP**. 
+**From *t*-SNE to UMAP with contrastive learning**, accepted at ICLR 2023 ([openreview](https://openreview.net/forum?id=B8a1FcY0vi), [arxiv](https://arxiv.org/abs/2206.01816))
 
 It depends on several other repositories, in particular [contrastive-ne](https://github.com/berenslab/contrastive-ne), which implement the actual logic and contain utilities.
 
@@ -42,7 +42,7 @@ python scripts/compute_embds_cne.py
 ```
 and check out the results in `notebooks/negtsne.ipynb`.
 
-<img width="400" alt="Neg-t-SNE on MNIST" src="/figures/Fig_1_a-e.png">
+<img width="600" alt="Neg-t-SNE on MNIST" src="/figures/Fig_1_a-e.png">
 
 
 To reproduce the UMAP embeddings from Fig. S1 a)-c), run
@@ -51,7 +51,7 @@ python scripts/compute_embds_umap.py
 ```
 and check out the results in `notebooks/umap_vs_negtsne.ipynb`.
 
-<img width="400" alt="UMAP no annealing" src="/figures/Fig_S1_a-c.png">
+<img width="600" alt="UMAP no annealing" src="/figures/Fig_S1_a-c.png">
 
 
 To reproduce the SimCLR experiments with `m=16`, run
@@ -73,16 +73,20 @@ This list details which figures can be inspected using which notebooks:
 - Fig 3:  `parametric.ipynb`
 - Fig S1: `umap_vs_negtsne.ipynb`
 - Fig S2: `umap_vs_negtsne.ipynb`
-- Fig S3: `attr_rep_plot_UMAP_neg.ipynb`
-- Fig S4: `umap_vs_negtsne_vary_n_noise.ipynb`
-- Fig S5: `tsne_vs_ncvis.ipynb`
-- Fig S6: `tsne_vs_ncvis.ipynb`
-- Fig S7: `negtsne.ipynb`, `tsne_ipynb`, `ncvis.ipynb`
-- Fig S8: `imba_mnist_negtsne.ipynb`, `imba_mnist_tsne_ncvis_umap.ipynb`
-- Fig S9: `human_negtsne.ipynb`, `human_tsne_ncvis_umap.ipynb`
-- Fig S10: `zebrafish_negtsne.ipynb`, `zebrafish_tsne_ncvis_umap.ipynb`
-- Fig S11: `c_elegans_negtsne.ipynb`, `c_elegans_tsne_ncvis_umap.ipynb`
-- Fig S12: `k49_negtsne.ipynb`, `k49_tsne_ncvis_umap.ipynb`
-- Fig S13: `k49_negtsne.ipynb`
-- Fig S14: `ncvis.ipynb`, `tsne.ipynb`
-- Fig S15: `infonctsne.ipynb`, `tsne.ipynb`
+- Fig S3: `trimap.ipynb`
+- Fig S4: `metrics.ipynb`
+- Fig S5: `toy_experiment.ipynb`
+- Fig S6: `speed_up.ipynb`
+- Fig S7: `attr_rep_plot_UMAP_neg.ipynb`
+- Fig S8: `umap_vs_negtsne_vary_n_noise.ipynb`
+- Fig S9: `tsne_vs_ncvis.ipynb`
+- Fig S10: `tsne_vs_ncvis.ipynb`
+- Fig S11: `negtsne.ipynb`, `tsne_ipynb`, `ncvis.ipynb`
+- Fig S12: `imba_mnist_negtsne.ipynb`, `imba_mnist_tsne_ncvis_umap.ipynb`
+- Fig S13: `human_negtsne.ipynb`, `human_tsne_ncvis_umap.ipynb`
+- Fig S14: `zebrafish_negtsne.ipynb`, `zebrafish_tsne_ncvis_umap.ipynb`
+- Fig S15: `c_elegans_negtsne.ipynb`, `c_elegans_tsne_ncvis_umap.ipynb`
+- Fig S16: `k49_negtsne.ipynb`, `k49_tsne_ncvis_umap.ipynb`
+- Fig S17: `k49_negtsne.ipynb`
+- Fig S18: `ncvis.ipynb`, `tsne.ipynb`
+- Fig S19: `infonctsne.ipynb`, `tsne.ipynb`
