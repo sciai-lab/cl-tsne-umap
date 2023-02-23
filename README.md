@@ -1,5 +1,15 @@
-This repository contains scripts and notebooks to reproduce the experiments in 
-**From *t*-SNE to UMAP with contrastive learning**, accepted at ICLR 2023 ([openreview](https://openreview.net/forum?id=B8a1FcY0vi), [arxiv](https://arxiv.org/abs/2206.01816))
+This repository contains scripts and notebooks to reproduce the experiments in  
+
+**From *t*-SNE to UMAP with contrastive learning** _ICLR 2023_ ([openreview](https://openreview.net/forum?id=B8a1FcY0vi), [arxiv](https://arxiv.org/abs/2206.01816))  
+  Sebastian Damrich, Niklas Böhm, Fred A Hamprecht, Dmitry Kobak 
+```
+@inproceedings{damrich2023from,
+  title={From $t$-{SNE} to {UMAP} with contrastive learning},
+  author={Damrich, Sebastian and B{\"o}hm, Jan Niklas  and Hamprecht, Fred A and Kobak, Dmitry},
+  booktitle={International Conference on Learning Representations},
+  year={2023},
+}
+```
 
 It depends on several other repositories, in particular [contrastive-ne](https://github.com/berenslab/contrastive-ne), which implement the actual logic and contain utilities.
 
