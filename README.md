@@ -69,6 +69,7 @@ To reproduce the run time by batch size analysis from Fig. S6, run
 python scripts/run_time_by_batch_size.py
 ```
 and check out the results in `notebooks/speed_up.ipynb`.
+
 <img width="400" alt="Run time by batch size" src="/figures/Fig_S6.png">
 
 
