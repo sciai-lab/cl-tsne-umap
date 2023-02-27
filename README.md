@@ -64,6 +64,16 @@ and check out the results in `notebooks/umap_vs_negtsne.ipynb`.
 <img width="600" alt="UMAP no annealing" src="/figures/Fig_S1_a-c.png">
 
 
+To compute the metrics for the Neg-t-SNE embedding spectra (Fig. S4), run
+```
+python scripts/compute_metrics.py
+```
+and check out the results in `notebooks/metrics.ipynb`.
+
+<img width="600" alt="kNN recall and Spearmann correlation over spectra" src="/figures/Fig_S4_a-b.png">
+
+
+
 To reproduce the run time by batch size analysis from Fig. S6, run
 ```
 python scripts/run_time_by_batch_size.py
@@ -71,8 +81,6 @@ python scripts/run_time_by_batch_size.py
 and check out the results in `notebooks/speed_up.ipynb`.
 
 <img width="400" alt="Run time by batch size" src="/figures/Fig_S6.png">
-
-
 
 
 To reproduce the SimCLR experiments with `m=16` and random seed `r=0`, run
