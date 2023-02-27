@@ -41,7 +41,7 @@ cd ncvis
 make libs
 make wrapper
 
-git clone -b arxiv-v1 https://github.com/berenslab/contrastive-ne
+git clone -b iclr2023 https://github.com/berenslab/contrastive-ne
 pip install --no-deps . 
 cd ..
 ```
@@ -64,14 +64,26 @@ and check out the results in `notebooks/umap_vs_negtsne.ipynb`.
 <img width="600" alt="UMAP no annealing" src="/figures/Fig_S1_a-c.png">
 
 
-To reproduce the SimCLR experiments with `m=16`, run
+To reproduce the run time by batch size analysis from Fig. S6, run
 ```
-python cne_scripts_notebooks/scripts/cifar10-acc.py
+python scripts/run_time_by_batch_size.py
 ```
+and check out the results in `notebooks/speed_up.ipynb`.
+<img width="600" alt="Run time by batch size" src="/figures/Fig_S6.png">
+
+
+
+
+To reproduce the SimCLR experiments with `m=16` and random seed `r=0`, run
+```
+python cne_scripts_notebooks/scripts/cifar10_acc.py -m 16 -r 0
+```
+The results will be printed in terminal but can also be checked out in `notebooks/eval_cifar.ipynb`.
 
 For other experiments adapt the parameters at the top of `compute_embds_cne.py`
-and `compute_embds_umap.py` or at the top of the `main` function in `cifar10-acc.py`
-accordingly. Downloaded datasets and neighbor embedding results will be saved in `cne_scripts_notebooks/data` and figures 
+and `compute_embds_umap.py` or at the top of the `main` function in `cifar10_acc.py`
+accordingly. The number of negative samples and the random seed for `cifar10_acc.py` can be 
+passed as command line arguments, as above. Downloaded datasets and neighbor embedding results will be saved in `cne_scripts_notebooks/data` and figures 
 will be saved in `cne_scripts_notebooks/figures`.
 
 All neighbor embedding results alongside their parameters can be 
@@ -100,3 +112,4 @@ This list details which figures can be inspected using which notebooks:
 - Fig S17: `k49_negtsne.ipynb`
 - Fig S18: `ncvis.ipynb`, `tsne.ipynb`
 - Fig S19: `infonctsne.ipynb`, `tsne.ipynb`
+- Tab 1: `eval_cifar.ipynb`
