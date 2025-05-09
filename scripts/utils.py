@@ -79,7 +79,7 @@ def get_noise_in_estimator(n, n_noise, dataset):
 
 # helper for path management
 def get_path(path_type):
-    with open("../my_paths", "r") as file:
+    with open("../paths", "r") as file:
         lines = file.readlines()
 
     lines = [line.split(" ") for line in lines]
